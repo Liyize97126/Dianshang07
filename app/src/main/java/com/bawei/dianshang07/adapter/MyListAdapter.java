@@ -30,7 +30,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHoul
     //定义
     private Date date;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    //1.先写ViewHouler  自定义的ViewHolder必须继承RecyclerView.ViewHolder，并在构造方法中进行findviewbyId()
+    //先写ViewHouler
     class MyViewHouler extends RecyclerView.ViewHolder{
         //定义
         TextView nickname,time,text,prise_count;
@@ -47,13 +47,12 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHoul
             image2 = itemView.findViewById(R.id.image2);
         }
     }
-    //2.继承，定义
+    //定义集合
     private List<ResultBean> list = new ArrayList<>();
     public List<ResultBean> getList() {
         return list;
     }
-    //3.方法实现
-    //MyViewHouler，用来查找布局，绑定到holder对象中
+    //方法实现
     @NonNull
     @Override
     public MyViewHouler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -62,7 +61,7 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHoul
         //返回holder对象
         return new MyViewHouler(inflate);
     }
-    //onBindViewHolder：使用绑定好的布局进行UI界面设置
+    //设置数据
     @Override
     public void onBindViewHolder(@NonNull MyViewHouler holder, int position) {
         //获取数据
@@ -75,28 +74,25 @@ public class MyListAdapter extends RecyclerView.Adapter<MyListAdapter.MyViewHoul
         //文本内容
         holder.text.setText(resultBean.getContent());
         holder.prise_count.setText(String.valueOf(resultBean.getGreatNum()));
-        //图片的加载：Glide
-        /*with方法需要传入context对象，所有view都有context对象
-        load方法需要传入url图片链接
-        into方法需要传入ImageView对象控件*/
-        //优化：设置默认图和错误图（含圆角）
-        RequestOptions requestOptions = new RequestOptions()
-                //图片加载出来前，显示的图片
-                .placeholder(R.mipmap.ic_launcher)
-                //url为空的时候,显示的图片
-                .fallback(R.mipmap.img_list_img)
-                //图片加载失败后，显示的错误图片
+        //图片加载：圆角图
+        RequestOptions requestOptions1 = new RequestOptions()
+                .placeholder(R.mipmap.img_list_img)
+                .fallback(R.mipmap.ic_launcher)
                 .error(R.mipmap.no_internet2)
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(60)));
-        //优化：头像的圆形图&圆角图
+        //图片加载：圆形图
+        RequestOptions requestOptions2 = new RequestOptions()
+                .placeholder(R.mipmap.img_list_img)
+                .fallback(R.mipmap.ic_launcher)
+                .error(R.mipmap.no_internet2)
+                .apply(RequestOptions.bitmapTransform(new CircleCrop()));
+        //图片加载
         Glide.with(holder.image.getContext())
-                //圆形图
-                .applyDefaultRequestOptions(RequestOptions.bitmapTransform(new CircleCrop()))
+                .applyDefaultRequestOptions(requestOptions2)
                 .load(resultBean.getHeadPic())
                 .into(holder.image);
         Glide.with(holder.image2.getContext())
-                //圆角图：RequestOptions.bitmapTransform(new RoundedCorners(60))
-                .applyDefaultRequestOptions(requestOptions)
+                .applyDefaultRequestOptions(requestOptions1)
                 .load(resultBean.getImage())
                 .into(holder.image2);
     }

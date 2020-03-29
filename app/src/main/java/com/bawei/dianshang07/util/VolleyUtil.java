@@ -21,15 +21,15 @@ import java.util.Map;
 public class VolleyUtil {
     //创建队列
     private static RequestQueue queue = Volley.newRequestQueue(MyApplication.context);
-    //请求：做了一个统一的封装，通过method判断请求方式
-    public static void request(int method, String url, Map<String,String> params,IModel iModel){
-        //判断请求的方式
+    //封装统一请求方法
+    public static void request(int method, String url, Map<String,String> params, IModel iModel){
+        //判断
         switch (method){
             case Request.Method.GET:{get(url,iModel);}break;
             case Request.Method.POST:{post(url,params,iModel);}break;
         }
     }
-    //get请求
+    //封装get请求
     private static void get(String url, final IModel iModel){
         //发起请求
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -44,7 +44,7 @@ public class VolleyUtil {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Tag", error.getMessage());
-                        iModel.requestSuccess(error.getMessage());
+                        iModel.requestError(error.getMessage());
                     }
                 }) {
             //这个方法解决Volley中文乱码问题
@@ -63,7 +63,7 @@ public class VolleyUtil {
         //发送请求至队列
         queue.add(stringRequest);
     }
-    //post请求
+    //封装post请求方法
     private static void post(String url, final Map<String,String> params, final IModel iModel){
         //发起请求
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -78,10 +78,10 @@ public class VolleyUtil {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Tag", error.getMessage());
-                        iModel.requestSuccess(error.getMessage());
+                        iModel.requestError(error.getMessage());
                     }
                 }) {
-            //*和get的区别：发送post参数
+            //发送post参数
             @Override
             protected Map<String, String> getParams(){
                 return params;
