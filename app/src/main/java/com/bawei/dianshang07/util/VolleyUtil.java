@@ -44,7 +44,7 @@ public class VolleyUtil {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Tag", error.getMessage());
-                        iModel.requestSuccess(error.getMessage());
+                        iModel.requestError(error.getMessage());
                     }
                 }) {
             //这个方法解决Volley中文乱码问题
@@ -78,7 +78,7 @@ public class VolleyUtil {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Tag", error.getMessage());
-                        iModel.requestSuccess(error.getMessage());
+                        iModel.requestError(error.getMessage());
                     }
                 }) {
             //*和get的区别：发送post参数
